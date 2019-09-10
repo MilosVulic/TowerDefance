@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StartingUtility.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">helpingPackage</a> &gt; <span class="el_source">StartingUtility.java</span></div><h1>StartingUtility.java</h1><pre class="source lang-java linenums">package helpingPackage;
+
+import java.io.IOException;
+import java.io.InputStream;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex2f;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
+
+<span class="nc" id="L30">public class StartingUtility {</span>
+
+    public static final int WIDTH = 1472;
+    public static final int HEIGHT = 960;
+    public static final int SQUARE_SIZE = 64;
+
+    // kreiranje ekrana tj pocetnog panela
+    public static void beginSession() {
+<span class="nc" id="L38">        Display.setTitle(&quot;Neko ime&quot;);</span>
+        try {
+<span class="nc" id="L40">            Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));</span>
+<span class="nc" id="L41">            Display.create();</span>
+<span class="nc" id="L42">        } catch (LWJGLException ex) {</span>
+<span class="nc" id="L43">            ex.printStackTrace();</span>
+<span class="nc" id="L44">        }</span>
+
+<span class="nc" id="L46">        glMatrixMode(GL_PROJECTION);</span>
+<span class="nc" id="L47">        glLoadIdentity();</span>
+<span class="nc" id="L48">        glOrtho(0, WIDTH, HEIGHT, 0, 1, -1);</span>
+<span class="nc" id="L49">        glMatrixMode(GL_MODELVIEW);</span>
+<span class="nc" id="L50">        glLoadIdentity();</span>
+<span class="nc" id="L51">        glEnable(GL_TEXTURE_2D);</span>
+<span class="nc" id="L52">        glEnable(GL_BLEND);</span>
+<span class="nc" id="L53">        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</span>
+<span class="nc" id="L54">    }</span>
+
+    // metoda za koliziju koja vraca true ili false u zavisnosti od toga da je doslo do inteceptovanja ili ne
+    public static boolean checkCollision(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2) {
+<span class="nc bnc" id="L58" title="All 8 branches missed.">        if (x1 + width1 &gt; x2 &amp;&amp; x1 &lt; x2 + width2 &amp;&amp; y1 + height1 &gt; y2 &amp;&amp; y1 &lt; y2 + height2) {</span>
+<span class="nc" id="L59">            return true;</span>
+        }
+<span class="nc" id="L61">        return false;</span>
+    }
+
+    // iscrtavanje textura odnosno quadova u odnosu na prosledjene parametre
+    public static void drawingTextureSquares(Texture texture, float x, float y, float width, float height) {
+<span class="nc" id="L66">        texture.bind();</span>
+<span class="nc" id="L67">        glTranslatef(x, y, 0);</span>
+<span class="nc" id="L68">        glBegin(GL_QUADS);</span>
+
+<span class="nc" id="L70">        glTexCoord2f(0, 0);</span>
+<span class="nc" id="L71">        glVertex2f(0, 0);</span>
+<span class="nc" id="L72">        glTexCoord2f(1, 0);</span>
+<span class="nc" id="L73">        glVertex2f(width, 0);</span>
+<span class="nc" id="L74">        glTexCoord2f(1, 1);</span>
+<span class="nc" id="L75">        glVertex2f(width, height);</span>
+<span class="nc" id="L76">        glTexCoord2f(0, 1);</span>
+<span class="nc" id="L77">        glVertex2f(0, height);</span>
+
+<span class="nc" id="L79">        glEnd();</span>
+<span class="nc" id="L80">        glLoadIdentity();</span>
+<span class="nc" id="L81">    }</span>
+
+    // iscrtavanje objekta sa parametrom za ugao odosno za rotaciju
+    public static void drawingTextureRotating(Texture texture, float x, float y, float width, float height, float angle) {
+<span class="nc" id="L85">        texture.bind();</span>
+<span class="nc" id="L86">        glTranslatef(x + width / 2, y + height / 2, 0);</span>
+<span class="nc" id="L87">        glRotatef(angle, 0, 0, 1);</span>
+<span class="nc" id="L88">        glTranslatef(-width / 2, -height / 2, 0);</span>
+<span class="nc" id="L89">        glBegin(GL_QUADS);</span>
+
+<span class="nc" id="L91">        glTexCoord2f(0, 0);</span>
+<span class="nc" id="L92">        glVertex2f(0, 0);</span>
+<span class="nc" id="L93">        glTexCoord2f(1, 0);</span>
+<span class="nc" id="L94">        glVertex2f(width, 0);</span>
+<span class="nc" id="L95">        glTexCoord2f(1, 1);</span>
+<span class="nc" id="L96">        glVertex2f(width, height);</span>
+<span class="nc" id="L97">        glTexCoord2f(0, 1);</span>
+<span class="nc" id="L98">        glVertex2f(0, height);</span>
+
+<span class="nc" id="L100">        glEnd();</span>
+<span class="nc" id="L101">        glLoadIdentity();</span>
+<span class="nc" id="L102">    }</span>
+
+    // metoda za vracanje texture
+    public static Texture loadTexture(String putanja, String extenzija) {
+<span class="nc" id="L106">        Texture tex = null;</span>
+<span class="nc" id="L107">        InputStream input = ResourceLoader.getResourceAsStream(putanja);</span>
+        try {
+<span class="nc" id="L109">            tex = TextureLoader.getTexture(extenzija, input);</span>
+<span class="nc" id="L110">        } catch (IOException ex) {</span>
+<span class="nc" id="L111">            ex.printStackTrace();</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">        return tex;</span>
+    }
+
+    // metoda koja sadrzi poziv metode za vracanje texture
+    public static Texture loadTexture(String putanja) {
+        Texture tex;
+<span class="nc" id="L119">        tex = loadTexture(&quot;&quot; + putanja + &quot;.png&quot;, &quot;PNG&quot;);</span>
+<span class="nc" id="L120">        return tex;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

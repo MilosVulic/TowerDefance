@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Projectil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">projectiles</a> &gt; <span class="el_source">Projectil.java</span></div><h1>Projectil.java</h1><pre class="source lang-java linenums">package projectiles;
+
+import enemies.Enemy;
+import enemies.Wave;
+import static helpingPackage.Clock.delta;
+import helpingPackage.Entity;
+import helpingPackage.StartingUtility;
+import static helpingPackage.StartingUtility.checkCollision;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+import org.newdawn.slick.opengl.Texture;
+import player.Player;
+import towers.Tower;
+
+public class Projectil implements Entity {
+
+    private Texture texture;
+    private float x, y, damage;
+    private double speed;
+    private int width, height;
+    private double xVelocity, yVelocity;
+    private static Enemy targetovanEnemy;
+    private boolean projectileActive;
+    private static double celoVreme;
+
+<span class="nc" id="L25">    public Projectil(ProjectileType type, float x, float y, int width, int height, Enemy targetovanEnemy) {</span>
+<span class="nc" id="L26">        this.texture = type.textureBullet;</span>
+<span class="nc" id="L27">        this.x = x;</span>
+<span class="nc" id="L28">        this.y = y;</span>
+<span class="nc" id="L29">        this.width = width;</span>
+<span class="nc" id="L30">        this.height = height;</span>
+<span class="nc" id="L31">        this.speed = type.speed;</span>
+<span class="nc" id="L32">        this.damage = type.damage;</span>
+<span class="nc" id="L33">        this.projectileActive = true;</span>
+<span class="nc" id="L34">        Projectil.targetovanEnemy = targetovanEnemy;</span>
+<span class="nc" id="L35">        izracunajSmer();</span>
+<span class="nc" id="L36">    }</span>
+
+    @Override
+    public void draw() {
+<span class="nc" id="L40">        drawingTextureSquares(texture, x, y, width, height);</span>
+<span class="nc" id="L41">    }</span>
+
+    // Metodica koja racuna gde da ide kuglica i kolko da prelazi u nekom vremenskom intervali
+    // prvo izracunam kolko vremena treba da kuglica doputuje do enmija kad ga prvi put targetuje
+    // kad to uradim onda u enemy klasi dobijem poziciju gde da puknem unapred da bi metak interceptovao enemija 
+    // i onda puknem u tom pravcu
+    private void izracunajSmer() {
+
+<span class="nc" id="L49">        double xUdaljenostFromEnemy = Math.abs(targetovanEnemy.getX() - x + StartingUtility.SQUARE_SIZE / 4);</span>
+<span class="nc" id="L50">        double yUdaljenostFromEnemy = Math.abs(targetovanEnemy.getY() - y + StartingUtility.SQUARE_SIZE / 4);   </span>
+<span class="nc" id="L51">        double distance1 = Math.sqrt(Math.pow(xUdaljenostFromEnemy, 2) + Math.pow(yUdaljenostFromEnemy, 2));</span>
+<span class="nc" id="L52">        Projectil.celoVreme = distance1 / speed;</span>
+        
+        //System.out.println(&quot;Targetovan x &quot; + targetovanEnemy.getX() + &quot; Novi x &quot; + targetovanEnemy.nextXPosition());
+        //System.out.println(&quot;Targetovan y &quot; + targetovanEnemy.getY() + &quot; Novi y &quot; + targetovanEnemy.nextYPosition());
+<span class="nc" id="L56">        double xUda = Math.abs(targetovanEnemy.nextXPosition() - x + StartingUtility.SQUARE_SIZE / 4);</span>
+<span class="nc" id="L57">        double yUda = Math.abs(targetovanEnemy.nextYPosition() - y + StartingUtility.SQUARE_SIZE / 4);</span>
+<span class="nc" id="L58">        double dist = Math.sqrt(Math.pow(xUda, 2) + Math.pow(yUda, 2));</span>
+
+<span class="nc" id="L60">        xVelocity = xUda / dist;</span>
+<span class="nc" id="L61">        yVelocity = yUda / dist;</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (targetovanEnemy.nextXPosition() &lt; x) {</span>
+<span class="nc" id="L64">            xVelocity *= -1;</span>
+        }
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (targetovanEnemy.nextYPosition() &lt; y) {</span>
+<span class="nc" id="L67">            yVelocity *= -1;</span>
+        }
+<span class="nc" id="L69">    }</span>
+
+    public static double getCeloVreme() {
+<span class="nc" id="L72">        return celoVreme;</span>
+    }
+
+    @Override
+    public void update() {
+<span class="nc bnc" id="L77" title="All 4 branches missed.">        if (targetovanEnemy.isEnemyAlive() == false &amp;&amp; projectileActive) {</span>
+<span class="nc" id="L78">            projectileActive = false;</span>
+        }
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (projectileActive) {</span>
+            //izracunajSmer();
+            //System.out.println(&quot; xVelocity &quot; + xVelocity + &quot; yVelocity &quot; + yVelocity);
+
+<span class="nc" id="L84">            x += delta() * speed * xVelocity;</span>
+<span class="nc" id="L85">            y += delta() * speed * yVelocity;</span>
+            //System.out.println(&quot; xVelocity = &quot; +  xVelocity + &quot; yVelocity = &quot; + yVelocity);
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            for (int i = 0; i &lt; Wave.getLista().size(); i++) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                if (checkCollision(x, y, width, height, Wave.getLista().get(i).getX(), Wave.getLista().get(i).getY(), Wave.getLista().get(i).getWidth(), Wave.getLista().get(i).getHeight())) {</span>
+                    //Tower.deleteProjectile(x, y);
+<span class="nc" id="L90">                    Tower.setX1(x);</span>
+<span class="nc" id="L91">                    Tower.setY1(y);</span>
+<span class="nc" id="L92">                    projectileActive = false;</span>
+<span class="nc" id="L93">                    hurtEnemy(Wave.getLista().get(i));</span>
+<span class="nc" id="L94">                    break;</span>
+                }
+            }
+<span class="nc bnc" id="L97" title="All 2 branches missed.">            for (int i = 0; i &lt; Wave.getLista().size(); i++) {</span>
+<span class="nc" id="L98">                double xPrethodnaUdaljenost = Math.abs(Wave.getLista().get(i).getX() - x);</span>
+<span class="nc" id="L99">                double yPrethodnaUdaljenost = Math.abs(Wave.getLista().get(i).getY() - y);</span>
+<span class="nc" id="L100">                double ukupnoPrethodna = xPrethodnaUdaljenost + yPrethodnaUdaljenost;</span>
+<span class="nc" id="L101">                double sledeciX = x + (delta() * speed * xVelocity);</span>
+<span class="nc" id="L102">                double sledeciY = y + (delta() * speed * yVelocity);</span>
+<span class="nc" id="L103">                double xSledecaUdaljenost = Math.abs(Wave.getLista().get(i).getX() - sledeciX);</span>
+<span class="nc" id="L104">                double ySledecaUdaljenost = Math.abs(Wave.getLista().get(i).getY() - sledeciY);</span>
+<span class="nc" id="L105">                double ukupnoSledeca = xSledecaUdaljenost + ySledecaUdaljenost;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                if (ukupnoSledeca &gt; ukupnoPrethodna + 20) {</span>
+<span class="nc" id="L107">                    projectileActive = false;</span>
+                } else {
+<span class="nc" id="L109">                    draw();</span>
+                }
+            }
+        }
+<span class="nc" id="L113">    }</span>
+
+    public void hurtEnemy(Enemy enemy) {
+<span class="nc" id="L116">        enemy.setHealth(enemy.getHealth() - damage);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (enemy.getHealth() &lt;= 0) {</span>
+<span class="nc" id="L118">            enemy.destroyEnemy();</span>
+<span class="nc" id="L119">            Player.earnMoney(enemy.getEnemyWorth());</span>
+        }
+<span class="nc" id="L121">    }</span>
+
+    public static Enemy getTargetovanEnemy() {
+<span class="nc" id="L124">        return targetovanEnemy;</span>
+    }
+
+    public float getX() {
+<span class="nc" id="L128">        return x;</span>
+    }
+
+    public void setX(float x) {
+<span class="nc" id="L132">        this.x = x;</span>
+<span class="nc" id="L133">    }</span>
+
+    public float getY() {
+<span class="nc" id="L136">        return y;</span>
+    }
+
+    public void setY(float y) {
+<span class="nc" id="L140">        this.y = y;</span>
+<span class="nc" id="L141">    }</span>
+
+    public double getSpeed() {
+<span class="nc" id="L144">        return speed;</span>
+    }
+
+    public void setSpeed(double speed) {
+<span class="nc" id="L148">        this.speed = speed;</span>
+<span class="nc" id="L149">    } </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

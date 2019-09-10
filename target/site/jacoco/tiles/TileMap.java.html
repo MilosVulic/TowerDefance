@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TileMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">tiles</a> &gt; <span class="el_source">TileMap.java</span></div><h1>TileMap.java</h1><pre class="source lang-java linenums">package tiles;
+
+import helpingPackage.StartingUtility;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+
+public class TileMap {
+
+    private final Tile[][] map;
+
+<span class="fc" id="L10">    public TileMap(Tile[][] map) {</span>
+<span class="fc" id="L11">        this.map = map;</span>
+<span class="fc" id="L12">    }</span>
+
+<span class="nc" id="L14">    public TileMap() {</span>
+<span class="nc" id="L15">        map = new Tile[15][20];</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">        for (int i = 0; i &lt; map.length; i++) {</span>
+<span class="nc bnc" id="L17" title="All 2 branches missed.">            for (int j = 0; j &lt; map[i].length; j++) {</span>
+<span class="nc" id="L18">                map[i][j] = new Tile(j * StartingUtility.SQUARE_SIZE, i * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, TileType.Grass);</span>
+            }
+        }
+<span class="nc" id="L21">    }</span>
+
+<span class="nc" id="L23">    public TileMap(int[][] againMap) {</span>
+<span class="nc" id="L24">        map = new Tile[15][20];</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        for (int i = 0; i &lt; map.length; i++) {</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">            for (int j = 0; j &lt; map[i].length; j++) {</span>
+<span class="nc bnc" id="L27" title="All 5 branches missed.">                switch (againMap[i][j]) {</span>
+                    case 0:
+<span class="nc" id="L29">                        map[i][j] = new Tile(j * StartingUtility.SQUARE_SIZE, i * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, TileType.Grass);</span>
+<span class="nc" id="L30">                        break;</span>
+                    case 1:
+<span class="nc" id="L32">                        map[i][j] = new Tile(j * StartingUtility.SQUARE_SIZE, i * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, TileType.Dirt);</span>
+<span class="nc" id="L33">                        break;</span>
+                    case 2:
+<span class="nc" id="L35">                        map[i][j] = new Tile(j * StartingUtility.SQUARE_SIZE, i * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, TileType.Water);</span>
+<span class="nc" id="L36">                        break;</span>
+                    case 3:
+<span class="nc" id="L38">                        map[i][j] = new Tile(j * StartingUtility.SQUARE_SIZE, i * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, TileType.LongGrass);</span>
+<span class="nc" id="L39">                        break;</span>
+                    default:
+<span class="nc" id="L41">                        map[i][j] = new Tile(j * StartingUtility.SQUARE_SIZE, i * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, TileType.Grass);</span>
+                        break;
+                }
+            }
+        }
+<span class="nc" id="L46">    }</span>
+
+    public void drawTiles() {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        for (int i = 0; i &lt; map.length; i++) {</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">            for (int j = 0; j &lt; map[i].length; j++) {</span>
+<span class="nc" id="L51">                Tile tile = map[i][j];</span>
+<span class="nc" id="L52">                drawingTextureSquares(tile.getTexture(), tile.getX(), tile.getY(), tile.getWidth(), tile.getHeigth());</span>
+            }
+        }
+<span class="nc" id="L55">    }</span>
+
+    public void setTile(int x, int y, TileType type) {
+<span class="nc" id="L58">        map[y][x] = new Tile(x * StartingUtility.SQUARE_SIZE, y * StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, StartingUtility.SQUARE_SIZE, type);</span>
+<span class="nc" id="L59">    }</span>
+
+    public Tile getTile(int x, int y) {
+<span class="pc bpc" id="L62" title="4 of 8 branches missed.">        if (x &lt; 15 &amp;&amp; y &lt; 20 &amp;&amp; x &gt; -1 &amp;&amp; y &gt; -1) {</span>
+<span class="fc" id="L63">            return map[x][y];</span>
+        } else {
+<span class="nc" id="L65">            return new Tile(0, 0, 0, 0, TileType.Water);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

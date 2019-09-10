@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UIComponents.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">ui_package</a> &gt; <span class="el_source">UIComponents.java</span></div><h1>UIComponents.java</h1><pre class="source lang-java linenums">package ui_package;
+
+import static helpingPackage.StartingUtility.HEIGHT;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+import static helpingPackage.StartingUtility.loadTexture;
+import java.util.ArrayList;
+import java.util.List;
+import org.lwjgl.input.Mouse;
+
+public class UIComponents {
+
+    private final List&lt;Button&gt; listaDugmica;
+
+<span class="nc" id="L14">    public UIComponents() {</span>
+<span class="nc" id="L15">        this.listaDugmica = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L16">    }</span>
+
+    public void addDugme(String ime, String textureName, int x, int y) {
+<span class="nc" id="L19">        listaDugmica.add(new Button(ime, loadTexture(textureName), x, y));</span>
+<span class="nc" id="L20">    }</span>
+
+    public boolean isClicked(String imeDugeta) {
+<span class="nc" id="L23">        Button button = getButton(imeDugeta);</span>
+<span class="nc" id="L24">        double mouseY = HEIGHT - Mouse.getY() - 1;</span>
+<span class="nc bnc" id="L25" title="All 8 branches missed.">        return Mouse.getX() &gt; button.getX() &amp;&amp; Mouse.getX() &lt; button.getX() + button.getWidth() &amp;&amp; mouseY &gt; button.getY() &amp;&amp; mouseY &lt; button.getY() + button.getHeight();</span>
+    }
+
+    private Button getButton(String imeDugeta) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        for (Button b : listaDugmica) {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">            if (b.getIme().equals(imeDugeta)) {</span>
+<span class="nc" id="L31">                return b;</span>
+            }
+<span class="nc" id="L33">        }</span>
+<span class="nc" id="L34">        return null;</span>
+    }
+
+    public void draw() {
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        for (Button button : listaDugmica) {</span>
+<span class="nc" id="L39">            drawingTextureSquares(button.getButtonTexture(), button.getX(), button.getY(), button.getWidth(), button.getHeight());</span>
+<span class="nc" id="L40">        }</span>
+<span class="nc" id="L41">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

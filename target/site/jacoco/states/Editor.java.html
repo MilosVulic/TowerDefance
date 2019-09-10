@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Editor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">states</a> &gt; <span class="el_source">Editor.java</span></div><h1>Editor.java</h1><pre class="source lang-java linenums">package states;
+
+import data.GameEngine;
+import helpingPackage.StartingUtility;
+import static helpingPackage.StartingUtility.HEIGHT;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+import static helpingPackage.StartingUtility.loadTexture;
+import static helpingPackage.TileMapManager.loadMap;
+import static helpingPackage.TileMapManager.saveMap;
+import org.lwjgl.input.Mouse;
+import tiles.Tile;
+import tiles.TileMap;
+import tiles.TileType;
+import ui_package.Button;
+import ui_package.EditorMenu;
+
+public class Editor {
+
+    private final TileMap tileMap;
+    private TileType[] types;
+    private int index;
+    private EditorMenu editorMenu;
+    private boolean holdingTile;
+    private Tile tempTile;
+
+<span class="nc" id="L26">    public Editor() {</span>
+<span class="nc" id="L27">        setUp();</span>
+<span class="nc" id="L28">        tileMap = loadMap(&quot;drislja&quot;);</span>
+<span class="nc" id="L29">        populatingArray();</span>
+<span class="nc" id="L30">    }</span>
+
+    public void update() {
+<span class="nc" id="L33">        tileMap.drawTiles();</span>
+<span class="nc" id="L34">        editorMenu.update();</span>
+<span class="nc" id="L35">        setOnClick();</span>
+<span class="nc" id="L36">    }</span>
+
+    private void setOnClick() {
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (holdingTile) {</span>
+<span class="nc" id="L41">            tempTile.setX(getTileFromTheMouse().getX());</span>
+<span class="nc" id="L42">            tempTile.setY(getTileFromTheMouse().getY());</span>
+<span class="nc" id="L43">            drawingTextureSquares(tempTile.getTexture(), tempTile.getX(), tempTile.getY(), tempTile.getWidth(), tempTile.getHeigth());</span>
+        }
+<span class="nc" id="L45">        setOnActionFromMenu();</span>
+<span class="nc" id="L46">    }</span>
+
+    private void setTile() {
+<span class="nc" id="L49">        tileMap.setTile((int) Math.floor(Mouse.getX() / StartingUtility.SQUARE_SIZE), (int) Math.floor((HEIGHT - Mouse.getY() - 1) / StartingUtility.SQUARE_SIZE), types[index]);</span>
+<span class="nc" id="L50">    }</span>
+
+    private Tile getTileFromTheMouse() {
+<span class="nc" id="L53">        return tileMap.getTile((HEIGHT - Mouse.getY() - 1) / StartingUtility.SQUARE_SIZE, Mouse.getX() / StartingUtility.SQUARE_SIZE);</span>
+    }
+
+    private void populatingArray() {
+<span class="nc" id="L57">        this.types = new TileType[4];</span>
+<span class="nc" id="L58">        types[0] = TileType.Grass;</span>
+<span class="nc" id="L59">        types[1] = TileType.Dirt;</span>
+<span class="nc" id="L60">        types[2] = TileType.Water;</span>
+<span class="nc" id="L61">        types[3] = TileType.LongGrass;</span>
+<span class="nc" id="L62">    }</span>
+
+    private void setUp() {
+<span class="nc" id="L65">        editorMenu = new EditorMenu(1280, 64);</span>
+<span class="nc" id="L66">        editorMenu.prerasporedDugmica(new Button(&quot;grass&quot;, loadTexture(&quot;grass&quot;), 0, 0));</span>
+<span class="nc" id="L67">        editorMenu.prerasporedDugmica(new Button(&quot;water&quot;, loadTexture(&quot;water&quot;), 0, 0));</span>
+<span class="nc" id="L68">        editorMenu.prerasporedDugmica(new Button(&quot;longGrass&quot;, loadTexture(&quot;longGrass&quot;), 0, 0));</span>
+<span class="nc" id="L69">        editorMenu.prerasporedDugmica(new Button(&quot;dirt&quot;, loadTexture(&quot;dirt&quot;), 0, 0));</span>
+<span class="nc" id="L70">        editorMenu.prerasporedGameStatusDugmica(new Button(&quot;save&quot;, loadTexture(&quot;saveButton&quot;), 0, 0));</span>
+<span class="nc" id="L71">        editorMenu.prerasporedGameStatusDugmica(new Button(&quot;back&quot;, loadTexture(&quot;smallBackButton&quot;), 0, 0));</span>
+<span class="nc" id="L72">    }</span>
+
+    private void setOnActionFromMenu() {
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (Mouse.isButtonDown(0)) {</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">            if (editorMenu.isClicked(&quot;grass&quot;)) {</span>
+<span class="nc" id="L77">                holdingTile = true;</span>
+<span class="nc" id="L78">                index = 0;</span>
+<span class="nc" id="L79">                tempTile = new Tile(0, 0, 64, 64, TileType.Grass);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            } else if (editorMenu.isClicked(&quot;water&quot;)) {</span>
+<span class="nc" id="L81">                holdingTile = true;</span>
+<span class="nc" id="L82">                index = 2;</span>
+<span class="nc" id="L83">                tempTile = new Tile(0, 0, 64, 64, TileType.Water);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">            } else if (editorMenu.isClicked(&quot;longGrass&quot;)) {</span>
+<span class="nc" id="L85">                holdingTile = true;</span>
+<span class="nc" id="L86">                index = 3;</span>
+<span class="nc" id="L87">                tempTile = new Tile(0, 0, 64, 64, TileType.LongGrass);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            } else if (editorMenu.isClicked(&quot;dirt&quot;)) {</span>
+<span class="nc" id="L89">                holdingTile = true;</span>
+<span class="nc" id="L90">                index = 1;</span>
+<span class="nc" id="L91">                tempTile = new Tile(0, 0, 64, 64, TileType.Dirt);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            } else if (editorMenu.isClicked(&quot;save&quot;)) {</span>
+<span class="nc" id="L93">                saveMap(&quot;drislja&quot;, tileMap);</span>
+<span class="nc" id="L94">                StateManager.tileMap = loadMap(&quot;drislja&quot;);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            } else if (editorMenu.isClicked(&quot;back&quot;)) {</span>
+<span class="nc" id="L96">                StateManager.setGameStateType(GameStateType.MAINMENU);</span>
+            } else {
+<span class="nc" id="L98">                holdingTile = false;</span>
+<span class="nc" id="L99">                setTile();</span>
+            }
+        }
+<span class="nc" id="L102">    }</span>
+
+    public TileMap getTileMap() {
+<span class="nc" id="L105">        return tileMap;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

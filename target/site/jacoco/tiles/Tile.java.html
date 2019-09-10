@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">tiles</a> &gt; <span class="el_source">Tile.java</span></div><h1>Tile.java</h1><pre class="source lang-java linenums">package tiles;
+
+import helpingPackage.StartingUtility;
+import static helpingPackage.StartingUtility.loadTexture;
+import org.newdawn.slick.opengl.Texture;
+
+public class Tile {
+
+    private float x, y;
+    private int width, heigth;
+    private Texture texture;
+    private TileType type;
+    private boolean buildable;
+
+<span class="fc" id="L15">    public Tile() {</span>
+<span class="fc" id="L16">    }</span>
+
+<span class="nc" id="L18">    public Tile(float x, float y, int width, int heigth, TileType type) {</span>
+<span class="nc" id="L19">        this.x = x;</span>
+<span class="nc" id="L20">        this.y = y;</span>
+<span class="nc" id="L21">        this.width = width;</span>
+<span class="nc" id="L22">        this.heigth = heigth;</span>
+<span class="nc" id="L23">        this.type = type;</span>
+<span class="nc" id="L24">        this.texture = loadTexture(type.tip);</span>
+<span class="nc" id="L25">        setBuildable();</span>
+<span class="nc" id="L26">    }</span>
+
+<span class="fc" id="L28">    public Tile(TileType tileType) {</span>
+<span class="fc" id="L29">        this.type = tileType;</span>
+<span class="fc" id="L30">    }</span>
+
+    public float getX() {
+<span class="fc" id="L33">        return x;</span>
+    }
+
+    public int getXGridPozicija() {
+<span class="fc" id="L37">        return (int) x / StartingUtility.SQUARE_SIZE;</span>
+    }
+
+    public void setX(float x) {
+<span class="fc" id="L41">        this.x = x;</span>
+<span class="fc" id="L42">    }</span>
+
+    public float getY() {
+<span class="fc" id="L45">        return y;</span>
+    }
+
+    public int getYGridPozicija() {
+<span class="fc" id="L49">        return (int) y / StartingUtility.SQUARE_SIZE;</span>
+    }
+
+    public void setY(float y) {
+<span class="fc" id="L53">        this.y = y;</span>
+<span class="fc" id="L54">    }</span>
+
+    public int getWidth() {
+<span class="fc" id="L57">        return width;</span>
+    }
+
+    public void setWidth(int width) {
+<span class="fc" id="L61">        this.width = width;</span>
+<span class="fc" id="L62">    }</span>
+
+    public int getHeigth() {
+<span class="fc" id="L65">        return heigth;</span>
+    }
+
+    public void setHeigth(int heigth) {
+<span class="fc" id="L69">        this.heigth = heigth;</span>
+<span class="fc" id="L70">    }</span>
+
+    public Texture getTexture() {
+<span class="fc" id="L73">        return texture;</span>
+    }
+
+    public void setTexture(Texture texture) {
+<span class="fc" id="L77">        this.texture = texture;</span>
+<span class="fc" id="L78">    }</span>
+
+    public TileType getType() {
+<span class="fc" id="L81">        return type;</span>
+    }
+
+    public void setType(TileType type) {
+<span class="fc" id="L85">        this.type = type;</span>
+<span class="fc" id="L86">    }</span>
+
+    public void setBuildable() {
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (type.buildable) {</span>
+<span class="fc" id="L90">            buildable = true;</span>
+        } else {
+<span class="fc" id="L92">            buildable = false;</span>
+        }
+<span class="fc" id="L94">    }</span>
+
+    public boolean isBuildable() {
+<span class="fc" id="L97">        return buildable;</span>
+    }
+
+    public void setBuildable(boolean buildable) {
+<span class="fc" id="L101">        this.buildable = buildable;</span>
+<span class="fc" id="L102">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

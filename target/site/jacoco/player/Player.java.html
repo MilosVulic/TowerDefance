@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Player.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">player</a> &gt; <span class="el_source">Player.java</span></div><h1>Player.java</h1><pre class="source lang-java linenums">package player;
+
+import enemies.Wave;
+import enemies.WaveManager;
+import helpingPackage.Clock;
+import helpingPackage.StartingUtility;
+import static helpingPackage.StartingUtility.HEIGHT;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import states.GameStateType;
+import states.StateManager;
+import tiles.Tile;
+import tiles.TileMap;
+import tiles.TileType;
+import tools.Shovel;
+import towers.Tower;
+import tools.Trap;
+import tools.Trash;
+
+public class Player {
+
+    public static int gold, lives;
+    private static TileMap tileMap;
+    private static WaveManager waveManger;
+    private static CopyOnWriteArrayList&lt;Tower&gt; listaTurreta;
+    private static CopyOnWriteArrayList&lt;Trap&gt; listaTrapki;
+    private boolean leviClickPreviously;
+    private Tower tempTower;
+    private static Trap tempTrap;
+    private static Shovel tempShovel;
+    private static Trash tempTrash;
+    private boolean holdingTower, holdingTrap, holdingShovel, holdingTrash;
+    private static boolean status;
+
+<span class="fc" id="L36">    public Player(TileMap tileMap, WaveManager waveManger) {</span>
+<span class="fc" id="L37">        Player.tileMap = tileMap;</span>
+<span class="fc" id="L38">        Player.waveManger = waveManger;</span>
+<span class="fc" id="L39">        Player.listaTurreta = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">        Player.listaTrapki = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L41">        this.leviClickPreviously = false;</span>
+<span class="fc" id="L42">        this.holdingTower = false;</span>
+<span class="fc" id="L43">        this.holdingTrap = false;</span>
+<span class="fc" id="L44">        this.holdingShovel = false;</span>
+<span class="fc" id="L45">        this.holdingTrash = false;</span>
+<span class="fc" id="L46">    }</span>
+
+    /*
+    Metoda za iscrtavanje elementa kad se samo mrda mis.
+    Takodje za placovanje elemenata
+    I sadrzi keyboard trigere za debug mode
+    */
+    public void update() {
+
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (holdingTower) {</span>
+<span class="nc" id="L56">            tempTower.setX(getTileFromTheMouse().getX());</span>
+<span class="nc" id="L57">            tempTower.setY(getTileFromTheMouse().getY());</span>
+<span class="nc" id="L58">            tempTower.draw();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        } else if (holdingTrap) {</span>
+<span class="nc" id="L60">            tempTrap.setX(getTileFromTheMouse().getX());</span>
+<span class="nc" id="L61">            tempTrap.setY(getTileFromTheMouse().getY());</span>
+<span class="nc" id="L62">            tempTrap.draw();</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        } else if (holdingShovel) {</span>
+<span class="nc" id="L64">            tempShovel.setX(getTileFromTheMouse().getX());</span>
+<span class="nc" id="L65">            tempShovel.setY(getTileFromTheMouse().getY());</span>
+<span class="nc" id="L66">            tempShovel.draw();</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        } else if (holdingTrash) {</span>
+<span class="nc" id="L68">            tempTrash.setX(getTileFromTheMouse().getX());</span>
+<span class="nc" id="L69">            tempTrash.setY(getTileFromTheMouse().getY());</span>
+<span class="nc" id="L70">            tempTrash.draw();</span>
+        }
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (Tower tower : listaTurreta) {</span>
+<span class="nc" id="L74">            tower.update();</span>
+<span class="nc" id="L75">            tower.updateEnemyList(Wave.getLista());</span>
+<span class="nc" id="L76">            tower.draw();</span>
+<span class="nc" id="L77">        }</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        for (Trap trap : listaTrapki) {</span>
+<span class="nc" id="L80">            trap.update();</span>
+<span class="nc" id="L81">            trap.updateListaEnemija(Wave.getLista());</span>
+<span class="nc" id="L82">            trap.draw();</span>
+<span class="nc" id="L83">        }</span>
+
+        // stavljanje svega i svacega na grid
+<span class="nc bnc" id="L86" title="All 4 branches missed.">        if (Mouse.isButtonDown(0) &amp;&amp; leviClickPreviously == false) {</span>
+<span class="nc" id="L87">            placeTheTower();</span>
+<span class="nc" id="L88">            placeTheTrap();</span>
+<span class="nc" id="L89">            digTravicu(getTileFromTheMouse());</span>
+<span class="nc" id="L90">            refundic(getTileFromTheMouse());</span>
+        }
+<span class="nc" id="L92">        leviClickPreviously = Mouse.isButtonDown(0);</span>
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        while (Keyboard.next()) {</span>
+<span class="nc bnc" id="L95" title="All 4 branches missed.">            if (Keyboard.getEventKey() == Keyboard.KEY_RIGHT &amp;&amp; Keyboard.getEventKeyState()) {</span>
+<span class="nc" id="L96">                Clock.changeMultiplier(0.2);</span>
+            }
+<span class="nc bnc" id="L98" title="All 4 branches missed.">            if (Keyboard.getEventKey() == Keyboard.KEY_LEFT &amp;&amp; Keyboard.getEventKeyState()) {</span>
+<span class="nc" id="L99">                Clock.changeMultiplier(-0.2);</span>
+            }
+        }
+<span class="nc" id="L102">    }</span>
+
+    public void pickTower(Tower tower) {
+<span class="fc" id="L105">        tempTower = tower;</span>
+<span class="fc" id="L106">        holdingTower = true;</span>
+<span class="fc" id="L107">        holdingTrap = false;</span>
+<span class="fc" id="L108">        holdingShovel = false;</span>
+<span class="fc" id="L109">        holdingTrash = false;</span>
+<span class="fc" id="L110">    }</span>
+
+    public void pickTrap(Trap trap) {
+<span class="fc" id="L113">        tempTrap = trap;</span>
+<span class="fc" id="L114">        holdingTrap = true;</span>
+<span class="fc" id="L115">        holdingShovel = false;</span>
+<span class="fc" id="L116">        holdingTower = false;</span>
+<span class="fc" id="L117">        holdingTrash = false;</span>
+<span class="fc" id="L118">    }</span>
+
+    public void pickShovel(Shovel shovel) {
+<span class="fc" id="L121">        tempShovel = shovel;</span>
+<span class="fc" id="L122">        holdingShovel = true;</span>
+<span class="fc" id="L123">        holdingTower = false;</span>
+<span class="fc" id="L124">        holdingTrap = false;</span>
+<span class="fc" id="L125">        holdingTrash = false;</span>
+<span class="fc" id="L126">    }</span>
+
+    public void pickTrash(Trash trash) {
+<span class="fc" id="L129">        tempTrash = trash;</span>
+<span class="fc" id="L130">        holdingTrash = true;</span>
+<span class="fc" id="L131">        holdingShovel = false;</span>
+<span class="fc" id="L132">        holdingTower = false;</span>
+<span class="fc" id="L133">        holdingTrap = false;</span>
+<span class="fc" id="L134">    }</span>
+
+    private void placeTheTower() {
+<span class="nc" id="L137">        Tile tempTile = getTileFromTheMouse();</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (holdingTower) {</span>
+<span class="nc bnc" id="L139" title="All 4 branches missed.">            if (tempTile.isBuildable() &amp;&amp; spendMoney(tempTower.getPrice())) {</span>
+<span class="nc" id="L140">                listaTurreta.add(tempTower);</span>
+<span class="nc" id="L141">                holdingTower = false;</span>
+<span class="nc" id="L142">                tempTile.setBuildable(false);</span>
+            }
+        }
+<span class="nc" id="L145">    }</span>
+
+    private void placeTheTrap() {
+<span class="nc" id="L148">        Tile tempTile = getTileFromTheMouse();</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (holdingTrap) {</span>
+<span class="nc bnc" id="L150" title="All 6 branches missed.">            if (getStatus(tempTile) == true &amp;&amp; tempTile.getType().equals(TileType.Dirt) &amp;&amp; spendMoney(tempTrap.getPrice())) {</span>
+<span class="nc" id="L151">                listaTrapki.add(tempTrap);</span>
+<span class="nc" id="L152">                holdingTrap = false;</span>
+            }
+        }
+<span class="nc" id="L155">    }</span>
+
+    private void digTravicu(Tile tile) {
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (holdingShovel) {</span>
+<span class="nc bnc" id="L159" title="All 4 branches missed.">            if (tile.getType().equals(TileType.LongGrass) &amp;&amp; spendMoney(tempShovel.getPrice())) {</span>
+<span class="nc" id="L160">                holdingShovel = false;</span>
+<span class="nc" id="L161">                tempShovel.dig(tile);</span>
+            }
+        }
+<span class="nc" id="L164">    }</span>
+
+    public void refundic(Tile tile) {
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (holdingTrash) {</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">            for (Tower tower : listaTurreta) {</span>
+<span class="pc bpc" id="L169" title="2 of 4 branches missed.">                if (tile.getX() == tower.getX() &amp;&amp; tile.getY() == tower.getY()) {</span>
+<span class="fc" id="L170">                    tempTrash.destroyTower(tower);</span>
+<span class="fc" id="L171">                    holdingTrash = false;</span>
+<span class="fc" id="L172">                    tile.setBuildable(true);</span>
+                }
+<span class="fc" id="L174">            }</span>
+        }
+<span class="fc" id="L176">    }</span>
+
+    public boolean getStatus(Tile tempTile) {
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        for (Trap t : listaTrapki) {</span>
+<span class="pc bpc" id="L180" title="1 of 4 branches missed.">            if (t.getX() == tempTile.getX() &amp;&amp; t.getY() == tempTile.getY()) {</span>
+<span class="fc" id="L181">                return false;</span>
+            }
+<span class="fc" id="L183">        }</span>
+<span class="fc" id="L184">        return true;</span>
+    }
+
+    public static void destroyTrap() {
+<span class="fc" id="L188">        listaTrapki.remove(Trap.getTemp());</span>
+<span class="fc" id="L189">    }</span>
+
+    private Tile getTileFromTheMouse() {
+<span class="nc" id="L192">        return tileMap.getTile((HEIGHT - Mouse.getY() - 1) / StartingUtility.SQUARE_SIZE, Mouse.getX() / StartingUtility.SQUARE_SIZE);</span>
+    }
+
+    public void setUp() {
+<span class="fc" id="L196">        gold = 100;</span>
+<span class="fc" id="L197">        lives = 5;</span>
+<span class="fc" id="L198">    }</span>
+
+    public static boolean spendMoney(int price) {
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (gold - price &lt; 0) {</span>
+<span class="fc" id="L202">            return false;</span>
+        } else {
+<span class="fc" id="L204">            gold -= price;</span>
+<span class="fc" id="L205">            return true;</span>
+        }
+    }
+
+    public static void earnMoney(int amount) {
+<span class="fc" id="L210">        gold += amount;</span>
+<span class="fc" id="L211">    }</span>
+
+    public static void reduceLives() {
+<span class="fc" id="L214">        lives--;</span>
+<span class="fc" id="L215">    }</span>
+
+    public static CopyOnWriteArrayList&lt;Trap&gt; getListaTrapki() {
+<span class="fc" id="L218">        return listaTrapki;</span>
+    }
+
+    public static void setListaTrapki(CopyOnWriteArrayList&lt;Trap&gt; listaTrapki) {
+<span class="fc" id="L222">        Player.listaTrapki = listaTrapki;</span>
+<span class="fc" id="L223">    }</span>
+
+    public static CopyOnWriteArrayList&lt;Tower&gt; getListaTurreta() {
+<span class="fc" id="L226">        return listaTurreta;</span>
+    }
+
+    public static int getWaveNumber() {
+<span class="fc" id="L230">        return waveManger.getBrojWave();</span>
+    }
+
+    public static void checkGameStatus() {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (lives &lt;= 0) {</span>
+<span class="nc" id="L235">            resetToBuildableFields();</span>
+<span class="nc" id="L236">            StateManager.setGameStateType(GameStateType.GAME_OVER);</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">        } else if (getWaveNumber() == 15) {</span>
+<span class="nc" id="L238">            resetToBuildableFields();</span>
+<span class="nc" id="L239">            StateManager.setGameStateType(GameStateType.FINISHED);</span>
+<span class="nc bnc" id="L240" title="All 4 branches missed.">        } else if (getWaveNumber() == 14 &amp;&amp; Wave.isEndWave()) {</span>
+<span class="nc" id="L241">            resetToBuildableFields();</span>
+<span class="nc" id="L242">            StateManager.setGameStateType(GameStateType.FINISHED);</span>
+        }
+<span class="nc" id="L244">    }</span>
+
+    // resetovanje tilova na buildable da opet moze da se gradi nesto
+    public static void resetToBuildableFields() {
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        for (Tower tower : listaTurreta) {</span>
+<span class="nc" id="L249">            tileMap.getTile((int) (tower.getY() / 64), (int) (tower.getX() / 64)).setBuildable(true);</span>
+<span class="nc" id="L250">        }</span>
+<span class="nc" id="L251">    }</span>
+
+    public void play() {
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">        if (status == true) {</span>
+<span class="fc" id="L255">            Clock.pause();</span>
+<span class="fc" id="L256">            Clock.paused = false;</span>
+<span class="fc" id="L257">            status = false;</span>
+        }
+<span class="fc" id="L259">    }</span>
+
+    public void pause() {
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        if (status == false) {</span>
+<span class="fc" id="L263">            Clock.pause();</span>
+<span class="fc" id="L264">            Clock.paused = true;</span>
+<span class="fc" id="L265">            status = true;</span>
+        }
+<span class="fc" id="L267">    }</span>
+
+    public static boolean getStatus() {
+<span class="fc" id="L270">        return status;</span>
+    }
+
+    public static void setStatus(boolean status) {
+<span class="fc" id="L274">        Player.status = status;</span>
+<span class="fc" id="L275">    }</span>
+
+    public boolean isHoldingShovel() {
+<span class="fc" id="L278">        return holdingShovel;</span>
+    }
+
+    public boolean isHoldingTower() {
+<span class="fc" id="L282">        return holdingTower;</span>
+    }
+
+    public boolean isHoldingTrap() {
+<span class="fc" id="L286">        return holdingTrap;</span>
+    }
+
+    public boolean isHoldingTrash() {
+<span class="fc" id="L290">        return holdingTrash;</span>
+    }
+
+    public void setHoldingTrash(boolean holdingTrash) {
+<span class="fc" id="L294">        this.holdingTrash = holdingTrash;</span>
+<span class="fc" id="L295">    }</span>
+
+    public static Trash getTempTrash() {
+<span class="fc" id="L298">        return tempTrash;</span>
+    }
+
+    public static void setTempTrash(Trash tempTrash) {
+<span class="fc" id="L302">        Player.tempTrash = tempTrash;</span>
+<span class="fc" id="L303">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tower.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">towers</a> &gt; <span class="el_source">Tower.java</span></div><h1>Tower.java</h1><pre class="source lang-java linenums">package towers;
+
+import enemies.Enemy;
+import enemies.Wave;
+import static helpingPackage.Clock.delta;
+import helpingPackage.Entity;
+import static helpingPackage.StartingUtility.drawingTextureRotating;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.newdawn.slick.opengl.Texture;
+import projectiles.Projectil;
+import tiles.Tile;
+
+public class Tower implements Entity, TowerBehaviour {
+
+    private float x, y, ugao;
+    private int width, height, price;
+    private double radius;
+    private double attackSpeed;
+    private Enemy targetovanEnemy;
+    private Texture textureTower, textureGun;
+    private CopyOnWriteArrayList&lt;Enemy&gt; listaEnemija;
+    private CopyOnWriteArrayList&lt;Projectil&gt; listaProjektila;
+    private boolean naciljan;
+    private float vremeOdZadnjegPucnja;
+    private TowerType type;
+    private static float x1, y1;
+
+<span class="fc" id="L30">    public Tower(TowerType type, Tile startTile, CopyOnWriteArrayList&lt;Enemy&gt; listaEnemija) {</span>
+<span class="fc" id="L31">        this.type = type;</span>
+<span class="fc" id="L32">        this.x = startTile.getX();</span>
+<span class="fc" id="L33">        this.y = startTile.getY();</span>
+<span class="fc" id="L34">        this.width = startTile.getWidth();</span>
+<span class="nc" id="L35">        this.height = startTile.getHeigth();</span>
+<span class="nc" id="L36">        this.radius = type.radius;</span>
+<span class="nc" id="L37">        this.textureTower = type.textureTower;</span>
+<span class="nc" id="L38">        this.textureGun = type.textureGun;</span>
+<span class="nc" id="L39">        this.attackSpeed = type.attackSpeed;</span>
+<span class="nc" id="L40">        this.listaProjektila = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="nc" id="L41">        this.listaEnemija = listaEnemija;</span>
+<span class="nc" id="L42">        this.naciljan = false;</span>
+<span class="nc" id="L43">        this.price = type.price;</span>
+<span class="nc" id="L44">    }</span>
+
+<span class="fc" id="L46">    public Tower() {</span>
+<span class="fc" id="L47">    }</span>
+
+    private Enemy target() {
+<span class="fc" id="L50">        Enemy najbliziEn = null;</span>
+<span class="fc" id="L51">        double randomVelikaDistanca = 99999999;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (Enemy e : listaEnemija) {</span>
+<span class="pc bpc" id="L53" title="1 of 4 branches missed.">            if (isEnemyInRange(e) &amp;&amp; findDistance(e) &lt; randomVelikaDistanca) {</span>
+<span class="fc" id="L54">                randomVelikaDistanca = findDistance(e);</span>
+<span class="fc" id="L55">                najbliziEn = e;</span>
+            }
+<span class="fc" id="L57">        }</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (najbliziEn != null) {</span>
+<span class="fc" id="L59">            naciljan = true;</span>
+        }
+<span class="fc" id="L61">        return najbliziEn;</span>
+    }
+
+    private boolean isEnemyInRange(Enemy enemy) {
+<span class="fc" id="L65">        double xDistanca = Math.abs(enemy.getX() - x);</span>
+<span class="fc" id="L66">        double yDistanca = Math.abs(enemy.getY() - y);</span>
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">        if (xDistanca &lt; radius &amp;&amp; yDistanca &lt; radius) {</span>
+<span class="fc" id="L68">            return true;</span>
+        }
+<span class="fc" id="L70">        return false;</span>
+    }
+
+    private double findDistance(Enemy enemy) {
+<span class="fc" id="L74">        double xDistanca = Math.abs(enemy.getX() - x);</span>
+<span class="fc" id="L75">        double yDistanca = Math.abs(enemy.getY() - y);</span>
+<span class="fc" id="L76">        return xDistanca + yDistanca;</span>
+    }
+
+    private float izracunajUgao() {
+<span class="nc" id="L80">        double tempAng = Math.atan2(targetovanEnemy.getY() - y, targetovanEnemy.getX() - x);</span>
+<span class="nc" id="L81">        return (float) Math.toDegrees(tempAng) - 90;</span>
+    }
+
+    public void updateEnemyList(CopyOnWriteArrayList&lt;Enemy&gt; listaEnemija) {
+<span class="fc" id="L85">        this.listaEnemija = listaEnemija;</span>
+<span class="fc" id="L86">    }</span>
+
+    public CopyOnWriteArrayList&lt;Enemy&gt; getListaEnemija() {
+<span class="fc" id="L89">        return listaEnemija;</span>
+    }
+    
+    public float getX() {
+<span class="fc" id="L93">        return x;</span>
+    }
+
+    public void setX(float x) {
+<span class="fc" id="L97">        this.x = x;</span>
+<span class="fc" id="L98">    }</span>
+
+    public float getY() {
+<span class="fc" id="L101">        return y;</span>
+    }
+
+    public void setY(float y) {
+<span class="fc" id="L105">        this.y = y;</span>
+<span class="fc" id="L106">    }</span>
+
+    public int getWidth() {
+<span class="fc" id="L109">        return width;</span>
+    }
+
+    public void setWidth(int width) {
+<span class="fc" id="L113">        this.width = width;</span>
+<span class="fc" id="L114">    }</span>
+
+    public int getHeight() {
+<span class="fc" id="L117">        return height;</span>
+    }
+
+    public void setHeight(int height) {
+<span class="fc" id="L121">        this.height = height;</span>
+<span class="fc" id="L122">    }</span>
+
+    public Enemy getTargetovanEnemy() {
+<span class="fc" id="L125">        return targetovanEnemy;</span>
+    }
+
+    public void setTargetovanEnemy(Enemy targetovanEnemy) {
+<span class="fc" id="L129">        this.targetovanEnemy = targetovanEnemy;</span>
+<span class="fc" id="L130">    }</span>
+
+    public Texture getTextureTower() {
+<span class="fc" id="L133">        return textureTower;</span>
+    }
+
+    public void setTextureTower(Texture textureTower) {
+<span class="fc" id="L137">        this.textureTower = textureTower;</span>
+<span class="fc" id="L138">    }</span>
+
+    public Texture getTextureGun() {
+<span class="fc" id="L141">        return textureGun;</span>
+    }
+
+    public void setTextureGun(Texture textureGun) {
+<span class="fc" id="L145">        this.textureGun = textureGun;</span>
+<span class="fc" id="L146">    }</span>
+
+    public CopyOnWriteArrayList&lt;Projectil&gt; getListaProjektila() {
+<span class="fc" id="L149">        return listaProjektila;</span>
+    }
+
+    public void setListaProjektila(CopyOnWriteArrayList&lt;Projectil&gt; listaProjektila) {
+<span class="fc" id="L153">        this.listaProjektila = listaProjektila;</span>
+<span class="fc" id="L154">    }</span>
+
+    public TowerType getType() {
+<span class="fc" id="L157">        return type;</span>
+    }
+
+    public void setType(TowerType type) {
+<span class="fc" id="L161">        this.type = type;</span>
+<span class="fc" id="L162">    }</span>
+
+    public int getPrice() {
+<span class="fc" id="L165">        return price;</span>
+    }
+
+    public void setPrice(int price) {
+<span class="fc" id="L169">        this.price = price;</span>
+<span class="fc" id="L170">    }</span>
+
+    public float getVremeOdZadnjegPucnja() {
+<span class="fc" id="L173">        return vremeOdZadnjegPucnja;</span>
+    }
+
+    public void setRadius(double radius) {
+<span class="fc" id="L177">        this.radius = radius;</span>
+<span class="fc" id="L178">    }</span>
+
+    public boolean isNaciljan() {
+<span class="fc" id="L181">        return naciljan;</span>
+    }
+     
+    
+    private void deleteProjectile(float x, float y) {
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        for (int i = 0; i &lt; listaProjektila.size(); i++) {</span>
+<span class="nc bnc" id="L187" title="All 4 branches missed.">            if (listaProjektila.get(i).getX() == x &amp;&amp; listaProjektila.get(i).getY() == y) {</span>
+<span class="nc" id="L188">                listaProjektila.remove(i);</span>
+            }
+        }
+<span class="nc" id="L191">    }</span>
+
+    public static void setX1(float x) {
+<span class="fc" id="L194">        Tower.x1 = x;</span>
+<span class="fc" id="L195">    }</span>
+
+    public static void setY1(float y) {
+<span class="fc" id="L198">        Tower.y1 = y;</span>
+<span class="fc" id="L199">    }</span>
+
+    @Override
+    public void update() {
+<span class="pc bpc" id="L203" title="3 of 4 branches missed.">        if (naciljan &amp;&amp; isEnemyInRange(targetovanEnemy)) {</span>
+<span class="nc" id="L204">            ugao = izracunajUgao();</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (vremeOdZadnjegPucnja &gt; attackSpeed) {</span>
+<span class="nc" id="L206">                towerShoot(targetovanEnemy);</span>
+            }
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">        } else if (!naciljan) {</span>
+<span class="fc" id="L209">            vremeOdZadnjegPucnja = 0;</span>
+<span class="fc" id="L210">            targetovanEnemy = target();</span>
+        }
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">        if (Wave.isEndWave()) {</span>
+<span class="nc" id="L213">            listaProjektila.clear();</span>
+<span class="nc" id="L214">            vremeOdZadnjegPucnja = 0;</span>
+        }
+<span class="pc bpc" id="L216" title="3 of 6 branches missed.">        if (targetovanEnemy == null || targetovanEnemy.isEnemyAlive() == false || isEnemyInRange(targetovanEnemy) == false) {</span>
+<span class="fc" id="L217">            naciljan = false;</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">        } else if (naciljan == true) {</span>
+<span class="nc" id="L219">            vremeOdZadnjegPucnja += delta();</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">            for (Projectil p : listaProjektila) {</span>
+<span class="nc" id="L221">                deleteProjectile(x1, y1);</span>
+<span class="nc" id="L222">                p.update();</span>
+<span class="nc" id="L223">            }</span>
+<span class="nc" id="L224">            draw();</span>
+        }
+<span class="fc" id="L226">    }</span>
+
+    @Override
+    public void draw() {
+<span class="nc" id="L230">        drawingTextureSquares(textureTower, x, y, width, height);</span>
+<span class="nc" id="L231">        drawingTextureRotating(textureGun, x, y, width, height, ugao);</span>
+<span class="nc" id="L232">    }</span>
+
+    @Override
+    public void towerShoot(Enemy en) {
+<span class="fc" id="L236">        vremeOdZadnjegPucnja = 0;</span>
+<span class="fc" id="L237">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

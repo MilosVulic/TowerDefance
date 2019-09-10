@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Trap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">tools</a> &gt; <span class="el_source">Trap.java</span></div><h1>Trap.java</h1><pre class="source lang-java linenums">package tools;
+
+import enemies.Enemy;
+import enemies.EnemyType;
+import helpingPackage.Entity;
+import static helpingPackage.StartingUtility.checkCollision;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.newdawn.slick.opengl.Texture;
+import player.Player;
+import tiles.Tile;
+
+public class Trap implements Entity {
+
+    private Texture trapTexture;
+    private float x, y;
+    private int width, height, price;
+    private Enemy targetovanEnemy;
+    private CopyOnWriteArrayList&lt;Enemy&gt; listaEnemija;
+    private boolean trapkaExsists;
+    private boolean naciljan;
+    private static Trap temp;
+
+<span class="fc" id="L24">    public Trap(Texture trapTexture, Tile startTile, CopyOnWriteArrayList&lt;Enemy&gt; listaEnemija) {</span>
+<span class="fc" id="L25">        this.trapTexture = trapTexture;</span>
+<span class="fc" id="L26">        this.listaEnemija = listaEnemija;</span>
+<span class="fc" id="L27">        this.x = startTile.getX();</span>
+<span class="fc" id="L28">        this.y = startTile.getY();</span>
+<span class="fc" id="L29">        this.width = startTile.getWidth();</span>
+<span class="fc" id="L30">        this.height = startTile.getHeigth();</span>
+<span class="fc" id="L31">        this.price = 20;</span>
+<span class="fc" id="L32">        this.trapkaExsists = true;</span>
+<span class="fc" id="L33">        this.naciljan = false;</span>
+<span class="fc" id="L34">    }</span>
+
+<span class="fc" id="L36">    public Trap() {</span>
+<span class="fc" id="L37">    }</span>
+
+    public Texture getTrapTexture() {
+<span class="fc" id="L40">        return trapTexture;</span>
+    }
+
+    public void setTrapTexture(Texture trapTexture) {
+<span class="fc" id="L44">        this.trapTexture = trapTexture;</span>
+<span class="fc" id="L45">    }</span>
+
+    public float getX() {
+<span class="fc" id="L48">        return x;</span>
+    }
+
+    public void setX(float x) {
+<span class="fc" id="L52">        this.x = x;</span>
+<span class="fc" id="L53">    }</span>
+
+    public float getY() {
+<span class="fc" id="L56">        return y;</span>
+    }
+
+    public void setY(float y) {
+<span class="fc" id="L60">        this.y = y;</span>
+<span class="fc" id="L61">    }</span>
+
+    public int getWidth() {
+<span class="fc" id="L64">        return width;</span>
+    }
+
+    public void setWidth(int width) {
+<span class="fc" id="L68">        this.width = width;</span>
+<span class="fc" id="L69">    }</span>
+
+    public int getHeight() {
+<span class="fc" id="L72">        return height;</span>
+    }
+
+    public void setHeight(int height) {
+<span class="fc" id="L76">        this.height = height;</span>
+<span class="fc" id="L77">    }</span>
+
+    public int getPrice() {
+<span class="fc" id="L80">        return price;</span>
+    }
+
+    public void setPrice(int price) {
+<span class="fc" id="L84">        this.price = price;</span>
+<span class="fc" id="L85">    }</span>
+
+    public Enemy getTargetovanEnemy() {
+<span class="fc" id="L88">        return targetovanEnemy;</span>
+    }
+
+    public void setTargetovanEnemy(Enemy targetovanEnemy) {
+<span class="fc" id="L92">        this.targetovanEnemy = targetovanEnemy;</span>
+<span class="fc" id="L93">    }</span>
+
+    public CopyOnWriteArrayList&lt;Enemy&gt; getListaEnemija() {
+<span class="fc" id="L96">        return listaEnemija;</span>
+    }
+
+    public void updateListaEnemija(CopyOnWriteArrayList&lt;Enemy&gt; listaEnemija) {
+<span class="fc" id="L100">        this.listaEnemija = listaEnemija;</span>
+<span class="fc" id="L101">    }</span>
+
+    private double findDistance(Enemy enemy) {
+<span class="fc" id="L104">        double xDistanca = Math.abs(enemy.getX() - x);</span>
+<span class="fc" id="L105">        double yDistanca = Math.abs(enemy.getY() - y);</span>
+<span class="fc" id="L106">        return xDistanca + yDistanca;</span>
+    }
+
+    private Enemy target() {
+<span class="fc" id="L110">        Enemy najbliziEn = null;</span>
+<span class="fc" id="L111">        double randomVelikaDistanca = 99999999;</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (Enemy e : listaEnemija) {</span>
+<span class="pc bpc" id="L113" title="2 of 4 branches missed.">            if (findDistance(e) &lt; randomVelikaDistanca &amp;&amp; e.isEnemyAlive()) {</span>
+<span class="fc" id="L114">                randomVelikaDistanca = findDistance(e);</span>
+<span class="fc" id="L115">                najbliziEn = e;</span>
+            }
+<span class="fc" id="L117">        }</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (najbliziEn != null) {</span>
+<span class="fc" id="L119">            naciljan = true;</span>
+        }
+<span class="fc" id="L121">        return najbliziEn;</span>
+    }
+
+    @Override
+    public void update() {
+
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (!naciljan) {</span>
+<span class="fc" id="L128">            targetovanEnemy = target();</span>
+        }
+
+<span class="pc bpc" id="L131" title="2 of 4 branches missed.">        if (targetovanEnemy == null || targetovanEnemy.isEnemyAlive() == false) {</span>
+<span class="nc" id="L132">            naciljan = false;</span>
+        }
+
+<span class="pc bpc" id="L135" title="3 of 4 branches missed.">        if (trapkaExsists &amp;&amp; naciljan) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">            for (int i = 0; i &lt; listaEnemija.size(); i++) {</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                if (checkCollision(x, y, width, height, listaEnemija.get(i).getX(), listaEnemija.get(i).getY(), listaEnemija.get(i).getWidth(), listaEnemija.get(i).getHeight())) {</span>
+<span class="nc bnc" id="L138" title="All 4 branches missed.">                    if (listaEnemija.get(i).getEnemyType().equals(EnemyType.ENEMY_ORANGE_BOSS) || listaEnemija.get(i).getEnemyType().equals(EnemyType.ENEMY_BLACK_BOSS)) {</span>
+<span class="nc" id="L139">                        trapkaExsists = false;</span>
+<span class="nc" id="L140">                        provideTrapka(x, y);</span>
+<span class="nc" id="L141">                        Player.destroyTrap();</span>
+                    } else {
+<span class="nc" id="L143">                        trapkaExsists = false;</span>
+<span class="nc" id="L144">                        listaEnemija.get(i).destroyEnemy();</span>
+<span class="nc" id="L145">                        Player.earnMoney(listaEnemija.get(i).getEnemyWorth());</span>
+<span class="nc" id="L146">                        provideTrapka(x, y);</span>
+<span class="nc" id="L147">                        Player.destroyTrap();</span>
+                    }
+                }
+            }
+<span class="nc" id="L151">            draw();</span>
+        }
+<span class="fc" id="L153">    }</span>
+
+    public void provideTrapka(float x, float y) {
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        for (Trap trap : Player.getListaTrapki()) {</span>
+<span class="pc bpc" id="L157" title="2 of 4 branches missed.">            if (trap.getX() == x &amp;&amp; trap.getY() == y) {</span>
+<span class="fc" id="L158">                temp = trap;</span>
+            }
+<span class="fc" id="L160">        }</span>
+<span class="fc" id="L161">    }</span>
+
+    @Override
+    public void draw() {
+<span class="nc" id="L165">        drawingTextureSquares(trapTexture, x, y, width, height);</span>
+<span class="nc" id="L166">    }</span>
+
+    public static Trap getTemp() {
+<span class="fc" id="L169">        return temp;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

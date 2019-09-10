@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">states</a> &gt; <span class="el_source">MainMenu.java</span></div><h1>MainMenu.java</h1><pre class="source lang-java linenums">package states;
+
+import static helpingPackage.StartingUtility.HEIGHT;
+import static helpingPackage.StartingUtility.WIDTH;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+import static helpingPackage.StartingUtility.loadTexture;
+import org.lwjgl.input.Mouse;
+import org.newdawn.slick.opengl.Texture;
+import ui_package.UIComponents;
+
+public class MainMenu {
+
+    private final Texture backgroundTexture;
+    private final Texture sideBar;
+    private final UIComponents uiComponents;
+
+<span class="nc" id="L17">    public MainMenu() {</span>
+<span class="nc" id="L18">        this.backgroundTexture = loadTexture(&quot;background&quot;);</span>
+<span class="nc" id="L19">        this.sideBar = loadTexture(&quot;beggingSideBar&quot;);</span>
+<span class="nc" id="L20">        uiComponents = new UIComponents();</span>
+<span class="nc" id="L21">        uiComponents.addDugme(&quot;playDugme&quot;, &quot;playButton&quot;, WIDTH / 20, (int) (HEIGHT * 0.30));</span>
+<span class="nc" id="L22">        uiComponents.addDugme(&quot;infoDugme&quot;, &quot;infoButton&quot;, WIDTH / 20, (int) (HEIGHT * 0.40));</span>
+<span class="nc" id="L23">        uiComponents.addDugme(&quot;editDugme&quot;, &quot;editButton&quot;, WIDTH / 20, (int) (HEIGHT * 0.50));</span>
+<span class="nc" id="L24">        uiComponents.addDugme(&quot;exitDugme&quot;, &quot;exitButton&quot;, WIDTH / 20, (int) (HEIGHT * 0.60));</span>
+
+<span class="nc" id="L26">    }</span>
+
+    private void setAction() {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (Mouse.isButtonDown(0)) {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">            if (uiComponents.isClicked(&quot;playDugme&quot;)) {</span>
+<span class="nc" id="L31">                StateManager.setGameStateType(GameStateType.GAME);</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">            } else if (uiComponents.isClicked(&quot;exitDugme&quot;)) {</span>
+<span class="nc" id="L33">                StateManager.setGameStateType(GameStateType.EXIT);</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">            } else if (uiComponents.isClicked(&quot;editDugme&quot;)) {</span>
+<span class="nc" id="L35">                StateManager.setGameStateType(GameStateType.EDITOR);</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">            } else if (uiComponents.isClicked(&quot;infoDugme&quot;)) {</span>
+<span class="nc" id="L37">                StateManager.setGameStateType(GameStateType.INFO);</span>
+            }
+        }
+<span class="nc" id="L40">    }</span>
+
+    public void update() {
+<span class="nc" id="L43">        drawingTextureSquares(backgroundTexture, 0, 0, 2048, 1024);</span>
+<span class="nc" id="L44">        drawingTextureSquares(sideBar, 1280, 0, 192, 960);</span>
+<span class="nc" id="L45">        uiComponents.draw();</span>
+<span class="nc" id="L46">        setAction();</span>
+<span class="nc" id="L47">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

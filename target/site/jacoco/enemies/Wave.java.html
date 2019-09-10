@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Wave.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">enemies</a> &gt; <span class="el_source">Wave.java</span></div><h1>Wave.java</h1><pre class="source lang-java linenums">package enemies;
+
+import static helpingPackage.Clock.delta;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public class Wave {
+
+    private float timeSinceLastSpawn;
+    private double spawnTime;
+    private int brojEnemijaPerWave;
+    private int brojSpamovanihEnemija;
+    private static boolean endWave;
+    private Enemy[] nizceEnemija;
+    private static CopyOnWriteArrayList&lt;Enemy&gt; lista;
+
+<span class="nc" id="L16">    public Wave() {</span>
+<span class="nc" id="L17">    }</span>
+
+<span class="nc" id="L19">    public Wave(Enemy[] nizceEnemija, double spawnTime) {</span>
+<span class="nc" id="L20">        this.spawnTime = spawnTime;</span>
+<span class="nc" id="L21">        this.nizceEnemija = nizceEnemija;</span>
+<span class="nc" id="L22">        this.brojEnemijaPerWave = nizceEnemija.length;</span>
+<span class="nc" id="L23">        this.timeSinceLastSpawn = 0;</span>
+<span class="nc" id="L24">        Wave.lista = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="nc" id="L25">        Wave.endWave = false;</span>
+<span class="nc" id="L26">        spawn();</span>
+<span class="nc" id="L27">    }</span>
+
+    public void update() {
+<span class="nc" id="L30">        boolean areEnemiesDead = true;</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (brojSpamovanihEnemija &lt; brojEnemijaPerWave) {</span>
+<span class="nc" id="L32">            timeSinceLastSpawn += delta();</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">            if (timeSinceLastSpawn &gt; spawnTime) {</span>
+<span class="nc" id="L34">                spawn();</span>
+<span class="nc" id="L35">                timeSinceLastSpawn = 0;</span>
+            }
+        }
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        for (Enemy e : lista) {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (e.isEnemyAlive()) {</span>
+<span class="nc" id="L40">                areEnemiesDead = false;</span>
+<span class="nc" id="L41">                e.update();</span>
+<span class="nc" id="L42">                e.draw();</span>
+            } else {
+<span class="nc" id="L44">                lista.remove(e);</span>
+            }
+<span class="nc" id="L46">        }</span>
+<span class="nc bnc" id="L47" title="All 4 branches missed.">        if (areEnemiesDead &amp;&amp; brojSpamovanihEnemija == brojEnemijaPerWave) {</span>
+<span class="nc" id="L48">            endWave = true;</span>
+        }
+<span class="nc" id="L50">    }</span>
+
+    public void spawn() {
+<span class="nc" id="L53">        lista.add(nizceEnemija[brojSpamovanihEnemija]);</span>
+<span class="nc" id="L54">        brojSpamovanihEnemija++;</span>
+<span class="nc" id="L55">    }</span>
+
+    public static boolean isEndWave() {
+<span class="fc" id="L58">        return endWave;</span>
+    }
+
+    public static CopyOnWriteArrayList&lt;Enemy&gt; getLista() {
+<span class="nc" id="L62">        return (CopyOnWriteArrayList&lt;Enemy&gt;) lista;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameMenu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">ui_package</a> &gt; <span class="el_source">GameMenu.java</span></div><h1>GameMenu.java</h1><pre class="source lang-java linenums">package ui_package;
+
+import helpingPackage.StartingUtility;
+import static helpingPackage.StartingUtility.HEIGHT;
+import static helpingPackage.StartingUtility.drawingTextureSquares;
+import static helpingPackage.StartingUtility.loadTexture;
+import java.awt.Font;
+import java.util.ArrayList;
+import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.opengl.Texture;
+import player.Player;
+
+public class GameMenu {
+
+    private final ArrayList&lt;Button&gt; menuListaDugmica;
+    private final ArrayList&lt;Button&gt; menuListaToolova;
+    private final ArrayList&lt;Button&gt; menuListaGameStatusDugmica;
+    private int x, y;
+<span class="nc" id="L21">    private int yCounter = 1;</span>
+<span class="nc" id="L22">    private int xCounter = 0;</span>
+<span class="nc" id="L23">    private int yCounter1 = 1;</span>
+<span class="nc" id="L24">    private int xCounter1 = 0;</span>
+<span class="nc" id="L25">    private int yCounter2 = 1;</span>
+<span class="nc" id="L26">    private int xCounter2 = 0;</span>
+    private final Texture gameMenuTexture;
+    private TrueTypeFont gameFont;
+    private Font fontic;
+
+<span class="nc" id="L31">    public GameMenu(int x, int y) {</span>
+<span class="nc" id="L32">        this.gameMenuTexture = loadTexture(&quot;gameMenu&quot;);</span>
+<span class="nc" id="L33">        this.x = x;</span>
+<span class="nc" id="L34">        this.y = y;</span>
+<span class="nc" id="L35">        this.menuListaDugmica = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L36">        this.menuListaToolova = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L37">        this.menuListaGameStatusDugmica = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L38">        fontic = new Font(&quot;Times New Roman&quot;, Font.BOLD, 24);</span>
+<span class="nc" id="L39">        gameFont = new TrueTypeFont(fontic, false);</span>
+<span class="nc" id="L40">    }</span>
+
+    public void prerasporedDugmica(Button b) {
+
+<span class="nc bnc" id="L44" title="All 4 branches missed.">        if (menuListaDugmica.size() % 2 == 0 &amp;&amp; menuListaDugmica.size() &gt; 0) {</span>
+<span class="nc" id="L45">            b.setY(y + yCounter * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L46">            yCounter++;</span>
+<span class="nc" id="L47">            xCounter = 0;</span>
+        }
+<span class="nc" id="L49">        b.setY(y + (yCounter * 16) + yCounter * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L50">        b.setX(x + 16 + (xCounter * 32) + xCounter * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L51">        xCounter++;</span>
+<span class="nc" id="L52">        menuListaDugmica.add(b);</span>
+<span class="nc" id="L53">    }</span>
+
+    public void prerasporedToolova(Button b) {
+
+<span class="nc bnc" id="L57" title="All 4 branches missed.">        if (menuListaToolova.size() % 2 == 0 &amp;&amp; menuListaToolova.size() &gt; 0) {</span>
+<span class="nc" id="L58">            b.setY(360 + yCounter1 * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L59">            yCounter1++;</span>
+<span class="nc" id="L60">            xCounter1 = 0;</span>
+        }
+<span class="nc" id="L62">        b.setY(360 + (yCounter1 * 16) + yCounter1 * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L63">        b.setX(x + 16 + (xCounter1 * 32) + xCounter1 * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L64">        xCounter1++;</span>
+<span class="nc" id="L65">        menuListaDugmica.add(b);</span>
+<span class="nc" id="L66">        menuListaToolova.add(b);</span>
+<span class="nc" id="L67">    }</span>
+
+    public void prerasporedGameStatusDugmica(Button b) {
+
+<span class="nc bnc" id="L71" title="All 4 branches missed.">        if (menuListaGameStatusDugmica.size() % 2 == 0 &amp;&amp; menuListaGameStatusDugmica.size() &gt; 0) {</span>
+<span class="nc" id="L72">            b.setY(800 + yCounter2 * 32);</span>
+<span class="nc" id="L73">            yCounter2++;</span>
+<span class="nc" id="L74">            xCounter2 = 0;</span>
+        }
+<span class="nc" id="L76">        b.setY(800 + (yCounter2 * 16) + yCounter2 * 32);</span>
+<span class="nc" id="L77">        b.setX(x + 16 + (xCounter2 * 32) + xCounter2 * StartingUtility.SQUARE_SIZE);</span>
+<span class="nc" id="L78">        xCounter2++;</span>
+<span class="nc" id="L79">        menuListaDugmica.add(b);</span>
+<span class="nc" id="L80">        menuListaGameStatusDugmica.add(b);</span>
+<span class="nc" id="L81">    }</span>
+
+    public void drawChangableText(int x, int y, String changableText) {
+<span class="nc" id="L84">        gameFont.drawString(x, y, changableText, Color.black);</span>
+<span class="nc" id="L85">        Color.white.bind();</span>
+<span class="nc" id="L86">    }</span>
+
+    public void update() {
+<span class="nc" id="L89">        drawingTextureSquares(gameMenuTexture, 1280, 0, 192, 960);</span>
+<span class="nc" id="L90">        drawChangableText(1330, 680, &quot;Lives  &quot; + Player.lives);</span>
+<span class="nc" id="L91">        drawChangableText(1330, 730, &quot;Gold  &quot; + Player.gold);</span>
+<span class="nc" id="L92">        drawChangableText(1330, 780, &quot;Wave  &quot; + Player.getWaveNumber());</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        for (Button button : menuListaDugmica) {</span>
+<span class="nc" id="L94">            drawingTextureSquares(button.getButtonTexture(), button.getX(), button.getY(), button.getWidth(), button.getHeight());</span>
+<span class="nc" id="L95">        }</span>
+<span class="nc" id="L96">    }</span>
+
+    public boolean isClicked(String imeDugeta) {
+<span class="nc" id="L99">        Button button = getButton(imeDugeta);</span>
+<span class="nc" id="L100">        double mouseY = HEIGHT - Mouse.getY() - 1;</span>
+<span class="nc bnc" id="L101" title="All 8 branches missed.">        return Mouse.getX() &gt; button.getX() &amp;&amp; Mouse.getX() &lt; button.getX() + button.getWidth() &amp;&amp; mouseY &gt; button.getY() &amp;&amp; mouseY &lt; button.getY() + button.getHeight();</span>
+    }
+
+    private Button getButton(String imeDugeta) {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        for (Button b : menuListaDugmica) {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            if (b.getIme().equals(imeDugeta)) {</span>
+<span class="nc" id="L107">                return b;</span>
+            }
+<span class="nc" id="L109">        }</span>
+<span class="nc" id="L110">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">data</a> &gt; <span class="el_source">GameEngine.java</span></div><h1>GameEngine.java</h1><pre class="source lang-java linenums">package data;
+
+import enemies.Wave;
+import enemies.WaveManager;
+import factory.DefanceFactory;
+import static helpingPackage.StartingUtility.loadTexture;
+import org.lwjgl.input.Mouse;
+import player.Player;
+import states.GameStateType;
+import states.StateManager;
+import tiles.TileMap;
+import tools.Shovel;
+import tools.Trap;
+import tools.Trash;
+import ui_package.Button;
+import ui_package.GameMenu;
+
+public class GameEngine {
+
+    private TileMap tileMap;
+    private Player player;
+    private WaveManager waveManager;
+    private GameMenu gameMenu;
+
+<span class="nc" id="L25">    public GameEngine(TileMap mapa) {</span>
+<span class="nc" id="L26">        this.tileMap = mapa;</span>
+<span class="nc" id="L27">        waveManager = new WaveManager(2, tileMap, tileMap.getTile(0, 2));</span>
+<span class="nc" id="L28">        player = new Player(tileMap, waveManager);</span>
+<span class="nc" id="L29">        player.setUp();</span>
+<span class="nc" id="L30">        setUp();</span>
+<span class="nc" id="L31">    }</span>
+
+    // setovanje dugmica na right-sajd baru
+    private void setUp() {
+<span class="nc" id="L35">        gameMenu = new GameMenu(1280, 64);</span>
+<span class="nc" id="L36">        gameMenu.prerasporedDugmica(new Button(&quot;basicShooterFull&quot;, loadTexture(&quot;towerBasicShooterFull&quot;), 0, 0));</span>
+<span class="nc" id="L37">        gameMenu.prerasporedDugmica(new Button(&quot;freezerFull&quot;, loadTexture(&quot;towerFreezerFull&quot;), 0, 0));</span>
+<span class="nc" id="L38">        gameMenu.prerasporedDugmica(new Button(&quot;trash&quot;, loadTexture(&quot;refund&quot;), 0, 0));</span>
+<span class="nc" id="L39">        gameMenu.prerasporedToolova(new Button(&quot;trap&quot;, loadTexture(&quot;hole&quot;), 0, 0));</span>
+<span class="nc" id="L40">        gameMenu.prerasporedToolova(new Button(&quot;kopanje&quot;, loadTexture(&quot;shovel&quot;), 0, 0));</span>
+<span class="nc" id="L41">        gameMenu.prerasporedGameStatusDugmica(new Button(&quot;play&quot;, loadTexture(&quot;smallPlayButton&quot;), 0, 0));</span>
+<span class="nc" id="L42">        gameMenu.prerasporedGameStatusDugmica(new Button(&quot;pause&quot;, loadTexture(&quot;pauseButton&quot;), 0, 0));</span>
+<span class="nc" id="L43">        gameMenu.prerasporedGameStatusDugmica(new Button(&quot;back&quot;, loadTexture(&quot;smallBackButton&quot;), 0, 0));</span>
+<span class="nc" id="L44">    }</span>
+
+    // handlovanje dugmica
+    private void updateUI() {
+<span class="nc" id="L48">        gameMenu.update();</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (Mouse.isButtonDown(0)) {</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">            if (gameMenu.isClicked(&quot;basicShooterFull&quot;)) {</span>
+<span class="nc" id="L51">                player.pickTower(DefanceFactory.getDefanceType(&quot;TowerBasic&quot;, tileMap.getTile(0, 0)));</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;freezerFull&quot;)) {</span>
+<span class="nc" id="L53">                player.pickTower(DefanceFactory.getDefanceType(&quot;TowerFreezer&quot;, tileMap.getTile(0, 0)));</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;trap&quot;)) {</span>
+<span class="nc" id="L55">                player.pickTrap(new Trap(loadTexture(&quot;hole&quot;), tileMap.getTile(0, 0), Wave.getLista()));</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;kopanje&quot;)) {</span>
+<span class="nc" id="L57">                player.pickShovel(new Shovel(loadTexture(&quot;shovel&quot;), tileMap.getTile(0, 0), tileMap));</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;trash&quot;)) {</span>
+<span class="nc" id="L59">                player.pickTrash(new Trash(loadTexture(&quot;refund&quot;), tileMap.getTile(0, 0)));</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;play&quot;)) {</span>
+<span class="nc" id="L61">                player.play();</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;pause&quot;)) {</span>
+<span class="nc" id="L63">                player.pause();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            } else if (gameMenu.isClicked(&quot;back&quot;)) {</span>
+<span class="nc" id="L65">                player.play();</span>
+<span class="nc" id="L66">                Player.resetToBuildableFields();</span>
+<span class="nc" id="L67">                StateManager.setGameStateType(GameStateType.MAINMENU);</span>
+            }
+        }
+<span class="nc" id="L70">    }</span>
+
+    public void update() {
+<span class="nc" id="L73">        tileMap.drawTiles();</span>
+<span class="nc" id="L74">        waveManager.update();</span>
+<span class="nc" id="L75">        player.update();</span>
+<span class="nc" id="L76">        updateUI();</span>
+<span class="nc" id="L77">        Player.checkGameStatus();</span>
+<span class="nc" id="L78">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

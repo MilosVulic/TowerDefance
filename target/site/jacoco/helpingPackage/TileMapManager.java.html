@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TileMapManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TDefance</a> &gt; <a href="index.source.html" class="el_package">helpingPackage</a> &gt; <span class="el_source">TileMapManager.java</span></div><h1>TileMapManager.java</h1><pre class="source lang-java linenums">package helpingPackage;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import tiles.Tile;
+import tiles.TileMap;
+import tiles.TileType;
+
+<span class="nc" id="L13">public class TileMapManager {</span>
+
+    // metoda za savovanje mape u fajl
+    public static void saveMap(String mapName, TileMap tileMap) {
+<span class="nc" id="L17">        String konacanString = getString(tileMap);</span>
+        try {
+<span class="nc" id="L19">            BufferedWriter buffer = new BufferedWriter(new FileWriter(new File(mapName)));</span>
+<span class="nc" id="L20">            buffer.write(konacanString);</span>
+<span class="nc" id="L21">            buffer.close();</span>
+<span class="nc" id="L22">        } catch (IOException ex) {</span>
+<span class="nc" id="L23">            ex.printStackTrace();</span>
+<span class="nc" id="L24">        }</span>
+<span class="nc" id="L25">    }</span>
+    
+// metoda za numeraciju tokena koji ce da se save u fajl
+    public static String getString(TileMap tileMap) {
+<span class="fc" id="L29">        String konacanString = &quot;&quot;;</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        for (int i = 0; i &lt; 15; i++) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            for (int j = 0; j &lt; 20; j++) {</span>
+<span class="fc" id="L32">                konacanString += getTileId(tileMap.getTile(i, j));</span>
+            }
+        }
+<span class="fc" id="L35">        return konacanString;</span>
+    }
+
+    // metoda za loadovanje mapice
+    public static TileMap loadMap(String mapName) {
+<span class="nc" id="L40">        TileMap tileMap = new TileMap();</span>
+        try {
+<span class="nc" id="L42">            BufferedReader buffer = new BufferedReader(new FileReader(mapName));</span>
+<span class="nc" id="L43">            String line = buffer.readLine();</span>
+<span class="nc" id="L44">            buffer.close();</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            for (int i = 0; i &lt; 15; i++) {</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">                for (int j = 0; j &lt; 20; j++) {</span>
+<span class="nc" id="L47">                    tileMap.setTile(j, i, getTileType(line.substring(i * 20 + j, i * 20 + j + 1)));</span>
+                }
+            }
+<span class="nc" id="L50">        } catch (IOException ex) {</span>
+<span class="nc" id="L51">            ex.printStackTrace();</span>
+<span class="nc" id="L52">        }</span>
+
+<span class="nc" id="L54">        return tileMap;</span>
+    }
+
+    // metoda za dekriptovanje vrednosti iz fajla
+    public static TileType getTileType(String tip) {
+<span class="pc bpc" id="L59" title="4 of 18 branches missed.">        switch (tip) {</span>
+            case &quot;0&quot;:
+<span class="fc" id="L61">                return TileType.Grass;</span>
+            case &quot;1&quot;:
+<span class="fc" id="L63">                return TileType.Dirt;</span>
+            case &quot;2&quot;:
+<span class="fc" id="L65">                return TileType.Water;</span>
+            case &quot;3&quot;:
+<span class="fc" id="L67">                return TileType.LongGrass;</span>
+            default:
+                break;
+        }
+<span class="fc" id="L71">        return null;</span>
+    }
+
+    // metoda za enriptovanje vrednosti u fajl
+    public static String getTileId(Tile tile) {
+<span class="pc bfc" id="L76" title="All 5 branches covered.">        switch (tile.getType()) {</span>
+            case Grass:
+<span class="fc" id="L78">                return &quot;0&quot;;</span>
+            case LongGrass:
+<span class="fc" id="L80">                return &quot;3&quot;;</span>
+            case Dirt:
+<span class="fc" id="L82">                return &quot;1&quot;;</span>
+            case Water:
+<span class="fc" id="L84">                return &quot;2&quot;;</span>
+            default:
+                break;
+        }
+<span class="fc" id="L88">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
